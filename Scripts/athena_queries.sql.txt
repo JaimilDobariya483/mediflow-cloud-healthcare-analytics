@@ -1,0 +1,115 @@
+-- MediFlow Cloud Project
+-- Healthcare Readmission Analytics
+
+-- Create Database
+CREATE DATABASE mediflow_db;
+
+-- Use Database
+USE mediflow_db;
+
+-- Create Hospital Data Table
+CREATE EXTERNAL TABLE hospital_data (
+patient_id INT,
+age INT,
+gender STRING,
+department STRING,
+disease STRING,
+length_of_stay INT,
+readmitted INT,
+hospital_city STRING
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar" = "\""
+)
+LOCATION 's3://mediflow-cloud-data-project/raw/'
+TBLPROPERTIES ("skip.header.line.count"="1");
+
+-- Preview Data
+SELECT * FROM hospital_data LIMIT 10;
+
+-- Readmission Count
+SELECT 
+readmitted,
+COUNT(*) as patient_count
+FROM hospital_data
+GROUP BY readmitted;
+
+-- Department Analysis
+SELECT 
+department,
+COUNT(*) as total_patients
+FROM hospital_data
+GROUP BY department;
+
+-- City Analysis
+SELECT 
+hospital_city,
+COUNT(*) as patient_count
+FROM hospital_data
+GROUP BY hospital_city;
+
+-- Readmission by Department
+SELECT 
+department,
+AVG(readmitted) * 100 AS readmission_rate
+FROM hospital_data
+GROUP BY department;
+
+-- Length of Stay Analysis
+SELECT 
+department,
+AVG(length_of_stay) AS avg_stay
+FROM hospital_data
+GROUP BY department;
+
+-- Age Risk Analysis
+SELECT 
+CASE 
+WHEN age < 30 THEN 'Under 30'
+WHEN age BETWEEN 30 AND 50 THEN '30-50'
+WHEN age BETWEEN 51 AND 70 THEN '51-70'
+ELSE '70+'
+END AS age_group,
+AVG(readmitted) * 100 AS readmission_rate
+FROM hospital_data
+GROUP BY 1;
+
+-- Disease Readmission Analysis
+SELECT 
+disease,
+AVG(readmitted) * 100 AS readmission_rate
+FROM hospital_data
+GROUP BY disease;
+
+-- Create Readmission Summary Table
+CREATE TABLE readmission_summary AS
+SELECT 
+department,
+disease,
+hospital_city,
+AVG(readmitted) * 100 AS readmission_rate,
+AVG(length_of_stay) AS avg_stay,
+COUNT(*) AS total_patients
+FROM hospital_data
+GROUP BY department, disease, hospital_city;
+
+-- Create KPI Table
+CREATE TABLE hospital_kpi AS
+SELECT 
+COUNT(*) AS total_patients,
+SUM(readmitted) AS total_readmitted,
+AVG(readmitted) * 100 AS readmission_rate,
+AVG(length_of_stay) AS avg_length_of_stay
+FROM hospital_data;
+
+-- High Risk Patient Analysis
+SELECT 
+department,
+disease,
+AVG(readmitted) * 100 AS readmission_rate
+FROM hospital_data
+GROUP BY department, disease
+ORDER BY readmission_rate DESC
+LIMIT 10;
