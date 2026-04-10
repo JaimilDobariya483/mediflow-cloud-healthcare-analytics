@@ -1,0 +1,70 @@
+MediFlow Cloud — Healthcare Readmission Analytics
+Project Overview
+
+MediFlow Cloud is a cloud-native healthcare analytics platform designed to analyze hospital readmission trends and optimize healthcare resource utilization. This project uses AWS services to build a scalable data pipeline and Power BI for interactive dashboard visualization.
+
+The goal of this project is to help hospitals:
+
+Reduce patient readmission rates
+Optimize hospital resource allocation
+Identify high-risk patient groups
+Improve healthcare decision-making
+Architecture
+
+The project follows a cloud-native architecture:
+
+Data Sources → AWS S3 (Raw Data) → AWS Athena (Query Engine) → Processed Data → Power BI Dashboard
+
+Tech Stack
+Cloud Services
+AWS S3 (Data Lake)
+AWS Athena (Serverless Query Engine)
+Data Processing
+Python
+Pandas
+Jupyter Notebook
+Visualization
+Power BI
+Data Pipeline
+Step 1: Data Generation
+
+Synthetic healthcare dataset generated using Python and Pandas.
+
+Step 2: Data Storage
+
+Data uploaded to AWS S3 Raw Zone.
+
+Step 3: Data Processing
+
+AWS Athena used for querying and transformation.
+
+Step 4: Data Export
+
+Processed datasets exported for dashboard visualization.
+
+Step 5: Dashboard Creation
+
+Power BI dashboard built for analytics and reporting.
+
+Dashboard Features
+Executive Summary
+Total Patients
+Readmission Rate
+Average Length of Stay
+Department Analysis
+Patient distribution by department
+Readmission rate by department
+Disease Analysis
+Readmission rate by disease
+Location Analysis
+Patient distribution by city
+Readmission rate by city
+Business Impact
+
+This project helps healthcare organizations:
+
+Improve patient care quality
+Reduce hospital costs
+Optimize staffing and resources
+Identify high-risk patient groups
+Support data-driven decision making
